@@ -1,0 +1,27 @@
+{
+	"database05":
+	{
+		"chef_environment": "Production",
+		"run_list": [ "role[database]" ],
+		"default": {
+		},
+		"automatic": {
+			"fqdn":  "database05.aws.com",
+			"ipaddress": "124.224.224.224",
+			"ec2" : {
+				"instance_id": "i-1234"
+			},
+            "roles": ["database"],
+            "chef_packages": {
+              "chef": {
+                 "version": "12.5.1",
+                 "chef_root": "/opt/chef/embedded/lib/ruby/gems/2.1.0/gems/chef-12.5.1/lib"
+              },
+              "ohai": {
+                "version": "8.7.0",
+                "ohai_root": "/opt/chef/embedded/lib/ruby/gems/2.1.0/gems/ohai-8.7.0/lib/ohai"
+              }
+           }
+		}
+	}
+}

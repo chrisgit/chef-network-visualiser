@@ -1,0 +1,8 @@
+{
+	"database_02": 
+	{
+		"public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjQIDAQAB\n-----END PUBLIC KEY-----\n",
+		"validator": false,
+		"admin": false
+	}
+}

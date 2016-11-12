@@ -1,0 +1,27 @@
+{
+	"apfw02":
+	{
+		"chef_environment": "Staging",
+		"run_list": [ "role[application_firewall]" ],
+		"default": {
+		},
+		"automatic": {
+			"fqdn":  "apfw02.aws.com",
+			"ipaddress": "101.201.201.201",
+			"ec2" : {
+				"instance_id": "i-1234"
+			},
+            "roles": ["application_firewall"],
+            "chef_packages": {
+              "chef": {
+                 "version": "12.5.1",
+                 "chef_root": "/opt/chef/embedded/lib/ruby/gems/2.1.0/gems/chef-12.5.1/lib"
+              },
+              "ohai": {
+                "version": "8.7.0",
+                "ohai_root": "/opt/chef/embedded/lib/ruby/gems/2.1.0/gems/ohai-8.7.0/lib/ohai"
+              }
+           }
+		}
+	}
+}

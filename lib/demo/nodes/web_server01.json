@@ -1,0 +1,31 @@
+{
+	"web_server01":
+	{
+		"name": "web_server01",
+		"chef_id": "web_server01",
+		"chef_environment": "Testing",
+		"run_list": [ "role[web_server]" ],
+		"default": {
+		},
+		"normal": {			
+		},
+		"automatic": {
+			"fqdn":  "web_server01.aws.com",
+			"ipaddress": "130.230.230.230",
+			"ec2" : {
+				"instance_id": "i-1234"
+			},
+            "roles": ["web_server"],
+            "chef_packages": {
+              "chef": {
+                 "version": "12.5.1",
+                 "chef_root": "/opt/chef/embedded/lib/ruby/gems/2.1.0/gems/chef-12.5.1/lib"
+              },
+              "ohai": {
+                "version": "8.7.0",
+                "ohai_root": "/opt/chef/embedded/lib/ruby/gems/2.1.0/gems/ohai-8.7.0/lib/ohai"
+              }
+           }
+		}
+	}
+}

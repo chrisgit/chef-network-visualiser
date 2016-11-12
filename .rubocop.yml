@@ -1,0 +1,38 @@
+Style/Tab:
+  Enabled: false
+
+Style/LeadingCommentSpace:
+  Enabled: false
+
+Style/TrailingWhitespace:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 9999
+
+Style/IndentationWidth:
+  Enabled: false
+
+Style/RedundantReturn:
+  Enabled: false
+
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Style/SpaceBeforeBlockBraces:
+  Enabled: false
+
+Style/SpaceAfterComma:
+  Enabled: false
+
+Style/SpaceInsideBlockBraces:
+  Enabled: false
+
+Style/SymbolProc:
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false
+
+Lint/EndAlignment:
+  AlignWith: variable

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chef Network Visualiser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- styles -->
+    <link href="css/styles.css" rel="stylesheet">
+
+	<!-- When doing a search ... ADD a NEW panel and leave it, Heading of the Panel will be CloudX etc --> 
+	<!-- Therefore could end up with multiple panels -->
+	
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+  <style type="text/css">
+    #mynetwork {
+      width: 100%;
+      height: 800px;
+      border: 1px solid lightgray;
+    }
+  </style>
+	
+  <script type="text/javascript" src="js/vis.js"></script>
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type="text/javascript" src="js/mustache.js"></script>
+  <script type="text/javascript" src="js/network.js"></script>
+  <link href="css/vis.css" rel="stylesheet" type="text/css" />
+
+	<!-- Template for node information http://stackoverflow.com/questions/18673860/defining-a-html-template-to-append-using-jquery -->
+	<!-- http://www.codereadability.com/constructing-html-with-templates/ -->
+	<!-- Mustache templates http://coenraets.org/blog/2011/12/tutorial-html-templates-with-mustache-js/ and http://www.sitepoint.com/creating-html-templates-with-mustachejs/ -->
+	<!-- JQuery templates http://stephenwalther.com/archive/2010/11/30/an-introduction-to-jquery-templates -->
+	<script id="node-template" type="text/x-custom-template">
+		<div id="node-detail-{{name}}">	
+			<div class="panel-options">
+				<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+				<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+				<a href="#" data-rel="reload"><i class="glyphicon glyphicon-remove"></i></a>
+			</div>
+			<div class="sidebar content-box" style="display: block;">
+		  		<table class="table table-striped">
+			        <thead>
+						<tr>
+							<th>{{name}}</th>
+		                </tr>
+					</thead>
+				    <tbody>
+						<tr>
+							<td>IP Address {{ipaddress}}</td>
+						</tr>
+						<tr>
+							<td>Chef version {{chef_version}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>	
+	</script>
+
+	<script id="environment-template" type="text/x-custom-template">
+		{{#.}}<li><a>{{name}}</a></li>{{/.}}
+	</script>
+	
+	
+	<!--
+	var template = $('#hidden-template').html();
+
+	$('button.addRow').click(function() {
+		$('#targetTable').append(template);
+	});
+	-->
+	
+  </head>
+  
+<body> 
+
+  	<div class="header">
+	     <div class="container">
+	        <div class="row">
+	           <div class="col-md-5">
+	              <!-- Logo -->
+	              <div class="logo">
+	                 <h1><a href="index.html">Chef Network Visualiser</a></h1>
+	              </div>
+	           </div>
+	           <div class="col-md-5">
+	              <div class="row">
+	                <div class="col-lg-12">
+	                  <div class="input-group form">
+	                       <input id="search_text" type="text" class="form-control" placeholder="Search...">
+	                       <span class="input-group-btn">
+	                         <button class="btn btn-primary" type="button" onClick="doSearch()">Search</button>
+	                       </span>
+	                  </div>
+	                </div>
+	              </div>
+	           </div>
+	           <div class="col-md-2">
+	              <div class="navbar navbar-inverse" role="banner">
+	                  <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+	                    <ul class="nav navbar-nav">
+	                      <li class="dropdown">
+	                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							  <i class="glyphicon glyphicon-cloud"></i>
+							    <span id="environment_selected"> Cloud </span>
+								<b class="caret"></b>
+							</a>
+							<!-- Also have it by type -->
+	                        <ul id="environment_list" class="dropdown-menu animated fadeInUp">
+	                        </ul>
+	                      </li>
+	                    </ul>
+	                  </nav>
+	              </div>
+	           </div>
+	        </div>
+	     </div>
+	</div>
+
+    <div class="page-content">
+    	<div class="row">
+		  <div id="node-detail" class="col-md-2">
+		<!-- DELETE -->
+
+		  <!-- LEAVE -->
+			 <div id="node-detail-x">
+				<div class="panel-options">
+					<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+					<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+					<a href="#" data-rel="reload"><i class="glyphicon glyphicon-remove"></i></a>
+				</div>
+				<div class="sidebar content-box" style="display: block;">
+					<table class="table table-striped">
+					  <thead>
+						<tr>
+						  <th>#</th>
+						  <th>First Name</th>
+						  <th>Last Name</th>
+						  <th>Username</th>
+						</tr>
+					  </thead>
+					  <tbody>
+						<tr>
+						  <td>1</td>
+						  <td>Mark</td>
+						  <td>Otto</td>
+						  <td>@mdo</td>
+						</tr>
+						<tr>
+						  <td>2</td>
+						  <td>Jacob</td>
+						  <td>Thornton</td>
+						  <td>@fat</td>
+						</tr>
+						<tr>
+						  <td>3</td>
+						  <td>Larry</td>
+						  <td>the Bird</td>
+						  <td>@twitter</td>
+						</tr>
+					  </tbody>
+					</table>
+				</div>
+			<!--
+			 <div class="sidebar content-box" style="display: block;">
+			 	<ul id="nodeDetail" style="list-style-type: none;">
+					<li>192.168.0.1</li>
+					<li>C98SWProxy</li>
+					<li>CentOS 6.5</li>
+					<li>Chef Client 11.18.6</li>
+				</ul>
+		  </div>
+		  -->
+		  </div>
+		 <div id="node-detail-y">
+			<div class="panel-options">
+				<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+				<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+				<a href="#" data-rel="reload"><i class="glyphicon glyphicon-remove"></i></a>
+			</div>
+			<div class="sidebar content-box" style="display: block;">
+				<table class="table table-striped">
+				  <thead>
+					<tr>
+					  <th>#</th>
+					  <th>First</th>
+					  <th>Last</th>
+					  <th>User</th>
+					</tr>
+				  </thead>
+				  <tbody>
+					<tr>
+					  <td>1</td>
+					  <td>Mark</td>
+					  <td>Otto</td>
+					  <td>@mdo</td>
+					</tr>
+					<tr>
+					  <td>2</td>
+					  <td>Jacob</td>
+					  <td>Thornton</td>
+					  <td>@fat</td>
+					</tr>
+					<tr>
+					  <td>3</td>
+					  <td>Larry</td>
+					  <td>the Bird</td>
+					  <td>@twitter</td>
+					</tr>
+				  </tbody>
+				</table>
+			</div>
+			<!--
+			 <div class="sidebar content-box" style="display: block;">
+			 	<ul id="nodeDetail" style="list-style-type: none;">
+					<li>192.168.0.1</li>
+					<li>C98SWProxy</li>
+					<li>CentOS 6.5</li>
+					<li>Chef Client 11.18.6</li>
+				</ul>
+		  </div>
+		  -->
+		  </div>
+		  
+		</div>
+		
+		  <div class="col-md-10">
+
+		  	<div class="row">
+		  		<div class="col-md-12">
+		  			<div class="content-box-header panel-heading">
+	  					<div class="panel-title ">Network Diagram</div>
+						
+						<div class="panel-options">
+							<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+							<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+						</div>
+		  			</div>
+		  			<div class="content-box-large box-with-header">
+						<div id="mynetwork"></div>
+					</div>
+		  		</div>
+		  	</div>
+
+		  </div>
+		</div>
+    </div>
+
+    <footer>
+         <div class="container">
+         
+            <div class="copy text-center">
+               Copyright 2016 <a href='#'>Techtots</a>
+            </div>
+            
+         </div>
+      </footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
+  </body>
+</html>
