@@ -31,18 +31,30 @@ module ChefNetworkViewer
       redirect '/index.html'
     end
   
+    get '/node_stats' do
+      settings.chefservice.node_stats.to_json
+    end
+
+    get '/environment_stats' do
+      settings.chefservice.environment_stats.to_json
+    end
+
+    get '/role_stats' do
+      settings.chefservice.role_stats.to_json
+    end
+
     # View by Role or Environment
-    get '/clouds' do
+    get '/network_views' do
       headers 'Access-Control-Allow-Origin' => '*'
       content_type :json
-      settings.chefservice.clouds.to_json
+      settings.chefservice.network_views.to_json
     end
   
     # Show all nodes for selected Role or Environment
-    get '/cloud_nodes/:cloud_id' do
+    get '/network_nodes/:view_id' do
       headers 'Access-Control-Allow-Origin' => '*'
       content_type :json
-      settings.chefservice.cloud_detail(params[:cloud_id]).to_json
+      settings.chefservice.network_nodes(params[:view_id]).to_json
     end
 
     # Home in on a specific node	 

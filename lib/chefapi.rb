@@ -12,16 +12,24 @@ module ChefNetworkViewer
       server.node
     end
     
+    def nodes
+      server.node.all
+    end
+
+    def environments
+      server.environment.all
+    end
+
+    def roles
+      server.role.all
+    end
+
     def partial_search(index, query = nil, attributes = [], options = {})
       server.partial_search(index, query, attributes, options)
     end
     
     def search(index, query = nil, options = {})
       server.search(index, query, options)
-    end
-
-    def all_environments
-      server.environment.all
     end
 
     def server

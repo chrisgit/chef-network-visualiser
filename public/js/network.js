@@ -1,7 +1,3 @@
-    var nodes = null;
-    var edges = null;
-    var network = null;
-
 	// Allow string interpolation http://javascript.crockford.com/remedial.html
 	String.prototype.supplant = function (o) {
       return this.replace(/{([^{}]*)}/g,
@@ -12,11 +8,30 @@
       );
     }
 	
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+	function findIDorLabel(search_value) {
+		/*
+		var result = nodes.filter(function( obj ) {
+ 			obj.id == search_value || obj.label == search_value;
+		});
+		*/
+		search_value = search_value.toLowerCase()
+		match = null;
+		for (var key in network.body.data.nodes._data) {
+  			if (network.body.data.nodes._data[key].id.toLowerCase() == search_value ||
+			  network.body.data.nodes._data[key].label.toLowerCase() == search_value) {
+			  match = network.body.data.nodes._data[key].id;
+			  break;
+			};
+		};
+		return match;
+	}
+
 	function doSearch() {
-		search_textbox = document.getElementById('search_text');
-		search_for = search_textbox.value;
-		node_location =  network.getPositions([search_for]);
-		node_reference = node_location[search_for];
+		search_textbox = document.getElementById('node_search');
+		match_item = findIDorLabel(search_textbox.value);
+		node_location =  network.getPositions([match_item]);
+		node_reference = node_location[match_item];
 		
 		var options = {
 			// position: {x:positionx,y:positiony}, // not relevant for focus
@@ -25,9 +40,18 @@
 			animation: true // default duration is 1000ms and default easingFunction is easeInOutQuad.
 		};
 		
-		network.focus(search_for, options)
+		network.focus(match_item, options)
 	}
 
+	var urlNetworkViews = "/network_views";
+	var urlNetworkNodes = "/network_nodes/{id}";
+	var urlNodeDetail = "/node_detail/{id}";
+
+	var urlNodeStats = "/node_stats";
+	var urlEnvironmentStats = "/environment_stats";
+	var urlRoleStats = "/role_stats";
+
+	// Generic AJAX method
 	function getData(request_url, request_callback) {
 		$.ajax({
 			dataType: 'json',
@@ -36,90 +60,42 @@
 		});
 	}
 
-	var urlClouds = "/clouds";
-	var urlCloudNode = "/cloud_nodes/{id}";
-	var urlNodeDetail = "/node_detail/{id}";
     // Requires call back due to fact that call is asynchronous
 	// TODO: change URL dependant on current running port
     var response = null;
-	function getCloudNodes(cloud_to_get) {
-		url = urlCloudNode.supplant({id: cloud_to_get});
-		getData(url, gotCloudNodes);
+	function getNetworkNodes(view_id) {
+		url = urlNetworkNodes.supplant({id: view_id});
+		getData(url, gotNetworkNodes);
 	}
-	
-	function gotCloudNodes(r) {
+
+	function getStats(urlStats, callback) {
+		getData(urlStats, callback);		
+	}
+
+	function gotNetworkNodes(r) {
 		response = r;
-		draw();
-	}
-
-	function showNode(params) {
-		clicked_node_id = params.nodes[0]
-		matched_node = null
-		nodes = response.nodes
-		for (var i = 0; i < nodes.length; i++) {
-			if (nodes[i].id == clicked_node_id) {
-				matched_node = nodes[i]
-				break
-			}
-		}
-		
-        // was matched_node.id but now we only return short name
-		url = urlNodeDetail.supplant({id: matched_node.chef_id})
-		getData(url, gotNodeDetail)
-		return matched_node.add_data ? matched_node.add_data : 'You clicked node id:' + matched_node.id
-	}
-
-	function gotNodeDetail(r) {
-		node_template = document.getElementById('node-template');
-		node_detail = document.getElementById('node-detail');
-		<!-- http://jsfiddle.net/superhacker/pRSjH/5/ -->
-		rendered_table = Mustache.render(node_template.innerHTML, r);
-		node_detail.innerHTML = rendered_table;
+		displayNetwork();
 	}
 	
-	function draw() {
+	var network_placeholder = null;
+	var network_created = null;
+
+	function displayNetwork() {
 		// create a network
-		var container = document.getElementById('mynetwork');
+		var container = document.getElementById(network_placeholder);
 		var data = {
 			nodes: response.nodes,
 			edges: response.edges
 		};
 		
-		var options = {};
+		var options = {
+			height: '600px'
+		};
 		network = new vis.Network(container, data, options);
-		
-		network.on("selectNode", function (params) {
-			params.event = "[original event]";
-			showNode(params);
-		});
-	}
-	
-	function updateSelectedCloud(environment) {
-      $('#environment_selected').text($(environment).text());
-	}
-	
-	function gotCloud(r) {
-		environment_template = document.getElementById('environment-template');
-		unordered_list = Mustache.render(environment_template.innerHTML, r);
-		$('#environment_list').append( unordered_list );
-		$("#environment_list li a").click(function() {
-			updateSelectedCloud(this);
-			getCloudNodes(this.text)
-		});
-	}
-	
-	function getClouds()
-	{
-		getData(urlClouds, gotCloud);
-	}
+		// network.setOptions(options);
+		// network.setSize('100%', '800px')
 
-	jQuery(document).ready(function($){
-		getClouds();
-	
-		$("#search_text").keypress(function(e) {
-			if(e.which == 13) {
-				doSearch();
-			}
-		});
-	});
-		
+		if (network_created != null) {
+			network_created(network);
+		}
+	}
