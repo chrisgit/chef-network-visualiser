@@ -14,8 +14,8 @@ For example
 ## Requirements
 
 You will need 
-* Ruby installed or Chef or ChefDK
-* Bundler
+* [Ruby](https://www.ruby-lang.org/en/documentation/installation/) installed or Chef or [ChefDK](https://downloads.chef.io/chefdk)
+* [Bundler](http://bundler.io/)
 
 Optional
 * Access to a Chef server with Chef client configuration file 
@@ -30,9 +30,16 @@ Go to the root of this application and use bundler to install gems
 $ bundle install
 ```
 
+This project was originally built on a Windows 8 (then 10) laptop and the Gemfile.lock contains win32-api gem.
+
+If using Linux then update the bundle with
+```
+$ bundle update
+``` 
+
 ## Running
 
-This application is built on top of Sinatra, a RACK friendly application.
+This application is built on top of [Sinatra](http://sinatrarb.com/), a [RACK](https://rack.github.io/) friendly application.
 Run the web application with bundle exec
 
 ```
@@ -43,7 +50,7 @@ The application will look for a Chef client configuration file in the following 
 * Root of this folder
 * ~/.chef (users home folder, then .chef folder)
 
-The command line should tell inform whether it is using a Chef client configuration file (client.rb or knife.rb) or using Chef zero for the purposes of demo.
+The command line should inform whether it is using a Chef client configuration file (client.rb or knife.rb) or using Chef zero for the purposes of demo.
 
 ![Image of application run with bundle exec rackup](images/show_config.png)
 
@@ -79,11 +86,12 @@ From now you'll be able to
 Works with Ruby versions
 * 1.9.3 
 * 2.3.1p112 (2016-04-26 revision 54768) [i386-mingw32]
+* ruby 2.4.2p198 (2017-09-14 revision 59899) [x64-mingw32]
 
 ## Other
 
 This was written for demo purposes / fun, code is not production ready, may contain bugs, does not contain nuts, some enjoyment maybe possible with the bouncy thing.
 
-Enjoy, if you like this application or wish to improve it then please feel free to do so.
+If you like this application or wish to improve it then please feel free to do so.
 
 Next: An improved UI? ... to be continued.
