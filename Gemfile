@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'json'
-gem 'sinatra', '= 1.4.7'
-gem 'rack', '<= 2.0.0'
+gem 'sinatra'
+gem 'rack'
 gem 'tilt'
 gem 'ridley'
 gem 'mixlib-config'
